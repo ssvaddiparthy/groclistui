@@ -23,7 +23,9 @@ class App extends Component {
     axios.get(`http://localhost:8080/recipe/all`)
         .then(res => {
           this.setState({ recipeList: res.data });
+          // todo: line here
         })
+    // todo: will work before line at above todo weird
   }
 
   renderTableData() {
@@ -50,7 +52,7 @@ class App extends Component {
               }
           </tr>
       );
-    }.bind(this))
+    }.bind(this)) // todo: how does bind work
   }
 
 
