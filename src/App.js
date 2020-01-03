@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import axios from 'axios'
+
+class App extends Component {
+  data = [
+   ["0.122584", "0.785882", "0.954039", "0.353008"],
+   ["1", "2", "0.954039", "0.353008"],
+ ];
+  constructor () {
+    super()
+    this.state = {
+      username: ''
+    }
+  }
+
+  getTableBodyAsReactElement() {
+    if (!this.state.username) {
+      axios.get('http://localhost:8080/recipe/all')
+        .then(response => this.setState({username: response.data}))
+      console.log(this.state.username);
+
+    }
+    return (!this.state.username) ? null : (
+      <tbody>
+        {this.state.username.map((item) => {                                // changed here
+          console.log('item: ', item);
+          return (
+            <tr>
+              <td>{item}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    );
+  }
+
+  render() {
+    return (
+      <table border="1">
+        {this.getTableBodyAsReactElement()}
+      </table>
+    )
+  }
 }
-
-export default App;
+export default App
