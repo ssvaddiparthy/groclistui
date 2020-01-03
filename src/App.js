@@ -1,46 +1,44 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import './App.css'
 
-import axios from 'axios'
-
 class App extends Component {
-  data = [
-   ["0.122584", "0.785882", "0.954039", "0.353008"],
-   ["1", "2", "0.954039", "0.353008"],
- ];
-  constructor () {
-    super()
+  weekDays = ["WeekDay", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  meals = ["BreakFast", "Lunch", "Dinner"]
+
+  constructor(props) {
+    super(props);
     this.state = {
-      username: ''
+      recipeList: ''
     }
   }
 
-  getTableBodyAsReactElement() {
-    if (!this.state.username) {
-      axios.get('http://localhost:8080/recipe/all')
-        .then(response => this.setState({username: response.data}))
-      console.log(this.state.username);
-
-    }
-    return (!this.state.username) ? null : (
-      <tbody>
-        {this.state.username.map((item) => {                                // changed here
-          console.log('item: ', item);
-          return (
-            <tr>
-              <td>{item}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    );
+  renderTableHeader() {
+    return this.meals.map((key, mealIndex) => {
+      return <th key={mealIndex}>{key.toUpperCase()}</th>
+    })
   }
+
+  renderTableData() {
+    return this.weekDays.map(function (day, dayIndex) {
+      return (
+          <tr id={dayIndex}>
+            <td>{day}</td>
+          </tr>
+      );
+    })
+  }
+
 
   render() {
     return (
-      <table border="1">
-        {this.getTableBodyAsReactElement()}
-      </table>
+        <div>
+          <table id='students' border="1">
+            <tbody>
+            <tr>{this.renderTableHeader()}</tr>
+            {this.renderTableData()}
+            </tbody>
+          </table>
+        </div>
     )
   }
 }
