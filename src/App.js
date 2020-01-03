@@ -1,14 +1,15 @@
 import React, {Component} from 'react'
 import './App.css'
+import axios from 'axios'
 
 class App extends Component {
-  weekDays = ["WeekDay", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   meals = ["BreakFast", "Lunch", "Dinner"]
 
   constructor(props) {
     super(props);
     this.state = {
-      recipeList: ''
+      recipeList: []
     }
   }
 
@@ -18,27 +19,56 @@ class App extends Component {
     })
   }
 
+  componentDidMount() {
+    axios.get(`http://localhost:8080/recipe/all`)
+        .then(res => {
+          this.setState({ recipeList: res.data });
+        })
+  }
+
   renderTableData() {
     return this.weekDays.map(function (day, dayIndex) {
       return (
-          <tr id={dayIndex}>
+          <tr key={dayIndex}>
             <td>{day}</td>
+              {
+                this.meals.map(function (meal, mealIndex) {
+                  return (
+                      <td key={mealIndex}>
+                        {
+                          <select key={meal}>
+                            {
+                              this.state.recipeList.map(function (recipe, recipeIndex) {
+                                return <option key={recipeIndex}>{recipe}</option>
+                              })
+                            }
+                          </select>
+                        }
+                      </td>
+                  );
+                }.bind(this))
+              }
           </tr>
       );
-    })
+    }.bind(this))
   }
 
 
   render() {
     return (
-        <div>
+        <form>
           <table id='students' border="1">
             <tbody>
-            <tr>{this.renderTableHeader()}</tr>
+            <tr>
+              <td><b>WeekDay</b></td>
+              {
+                this.renderTableHeader()
+              }
+            </tr>
             {this.renderTableData()}
             </tbody>
           </table>
-        </div>
+        </form>
     )
   }
 }
