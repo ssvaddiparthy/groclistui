@@ -3,13 +3,15 @@ import './App.css'
 import axios from 'axios'
 
 class App extends Component {
-  weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-  meals = ["BreakFast", "Lunch", "Dinner"]
+    weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    meals = ["BreakFast"]
 
   constructor(props) {
     super(props);
     this.state = {
-      recipeList: []
+      recipeList: [],
+        selectedRecipes: [],
+        fetchedJson: {}
     }
   }
 
@@ -23,9 +25,14 @@ class App extends Component {
     axios.get(`http://localhost:8080/recipe/all`)
         .then(res => {
           this.setState({ recipeList: res.data });
-          // todo: line here
+          // todo: line here will work before lines outside the axios.get
         })
-    // todo: will work before line at above todo weird
+  }
+
+  handleChange(event){
+    event.preventDefault();
+    console.log(event.target.value);
+    this.state.selectedRecipes.push(event.target.value);
   }
 
   renderTableData() {
@@ -38,7 +45,8 @@ class App extends Component {
                   return (
                       <td key={mealIndex}>
                         {
-                          <select key={meal}>
+                          <select key={meal} onChange={this.handleChange.bind(this)}>
+                              <option key="blankOption">Choose Item to Cook</option>
                             {
                               this.state.recipeList.map(function (recipe, recipeIndex) {
                                 return <option key={recipeIndex}>{recipe}</option>
@@ -55,10 +63,25 @@ class App extends Component {
     }.bind(this)) // todo: how does bind work
   }
 
+  handleSubmit(event){
+      event.preventDefault();
+      console.log(this.state.recipeList);
+      let url = 'http://localhost:8080/ingredients/?recipes=' + this.state.selectedRecipes.join(',')
+    axios.get(url)
+        .then(res => {
+          console.log(res.data);
+          this.setState({
+              fetchedJson: res.data
+          })
+        })
+      this.setState({
+          selectedRecipes: []
+      })
+  }
 
   render() {
-    return (
-        <form>
+      return (
+        <form onSubmit={this.handleSubmit.bind(this)}>
           <table id='students' border="1">
             <tbody>
             <tr>
@@ -70,7 +93,9 @@ class App extends Component {
             {this.renderTableData()}
             </tbody>
           </table>
+          <input type="submit" value="Submit" />
         </form>
+
     )
   }
 }
