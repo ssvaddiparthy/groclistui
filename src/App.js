@@ -3,7 +3,7 @@ import './App.css'
 import axios from 'axios'
 
 class App extends Component {
-    weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    weekDays = ["Sunday", "Monday"]
     meals = ["BreakFast"]
 
   constructor(props) {
