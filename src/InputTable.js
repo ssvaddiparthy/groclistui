@@ -51,7 +51,7 @@ export class InputTable extends Component {
                           onChange={this.handleChange.bind(this)}
                         >
                           <option key="blankOption">Choose Item to Cook</option>
-                          {this.state.recipeList.map(function(
+                          {JSON.parse(this.state.recipeList.responseData).map(function(
                             recipe,
                             recipeIndex
                           ) {

@@ -24,6 +24,8 @@ export class App extends Component {
         recipeList: res.data,
         renderInputTable: true
       });
+    }).catch(function (error) {
+      console.log(JSON.stringify(error))
     });
   }
 
