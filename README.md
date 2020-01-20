@@ -1,6 +1,6 @@
-# OnGroceryUI
+# GrocListUI
 
-This react.js project serves as the home for a WEB UI for OnGrocery Rest API
+This react.js project serves as the home for a WEB UI for GrocList Rest API
 
 #### Development Guide:
 1. Clone the project and run:
