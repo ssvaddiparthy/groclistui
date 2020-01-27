@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+import Cookies from "js-cookie";
 
 export class ResultTable extends Component {
   constructor(props) {
@@ -10,22 +10,10 @@ export class ResultTable extends Component {
     };
   }
 
-  componentDidMount() {
-    this.handleSubmit(this.props.recipeList);
-  };
-
-  handleSubmit(selectedRecipes) {
-    if (!this.state.isLoaded) {
-      let url =
-          "http://localhost:8080/ingredients/?recipes=" +
-          selectedRecipes.join(",");
-      axios.get(url).then(res => {
-        this.setState({
-          fetchedJson: res.data,
-          isLoaded: true
-        });
-      });
-    }
+  logOutHandler(event) {
+    event.preventDefault();
+    Cookies.set("loggedIn", false);
+    window.location.reload();
   }
 
   render() {
@@ -34,7 +22,7 @@ export class ResultTable extends Component {
           <h1 align="center">Ingredients</h1>
           <table border="1" align="center">
             <tbody>
-            {JSON.parse(this.state.fetchedJson.responseData).map(function(ingredient, ingredientIndex) {
+            {JSON.parse(this.props.recipeList).map(function(ingredient, ingredientIndex) {
               return (
                   <tr key={ingredientIndex}>
                     <td>{ingredient.name}</td>
@@ -45,9 +33,15 @@ export class ResultTable extends Component {
             })}
             </tbody>
           </table>
+          <input
+              type="submit"
+              value="LogOut"
+              onClick={this.logOutHandler.bind(this)}
+          />
         </div>
     ) : (
         <div>Loading...</div>
+
     );
   }
 }

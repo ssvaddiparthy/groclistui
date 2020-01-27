@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import axios from "axios";
-import { ResultTable } from "./ResultTable";
 import { InputTable } from "./InputTable";
+import {LoginPage} from "./LoginPage";
+import PrivateRoute from "./PrivateRoute";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'
 
 export class App extends Component {
   constructor(props) {
@@ -18,37 +23,18 @@ export class App extends Component {
     };
   }
 
-  componentDidMount() {
-    axios.get(`http://localhost:8080/recipe/all`).then(res => {
-      this.setState({
-        recipeList: res.data,
-        renderInputTable: true
-      });
-    }).catch(function (error) {
-      console.log(JSON.stringify(error))
-    });
-  }
-
-  updateSelection(selection) {
-    this.setState({
-      selectedRecipes: selection,
-      selectionReceived: true
-    });
-  }
-
   render() {
     return (
-      <div>
-        {this.state.showTable && this.state.renderInputTable && (
-          <InputTable
-            recipeList={this.state.recipeList}
-            selectionCallback={this.updateSelection.bind(this)}
-          />
-        )}
-        {this.state.selectionReceived && (
-          <ResultTable recipeList={this.state.selectedRecipes} />
-        )}
-      </div>
-    );
+        <Router>
+          <div>
+            <ul>
+              <li><Link to="/login">Login Page</Link></li>
+              <li><Link to="/input">Table Page</Link></li>
+            </ul>
+            <Route path="/login" component={LoginPage}/>
+            <PrivateRoute path="/input" component={InputTable}/>
+          </div>
+        </Router>
+    )
   }
 }
