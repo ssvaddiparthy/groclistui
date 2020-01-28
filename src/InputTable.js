@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import Cookies from 'js-cookie';
 import axios from "axios";
 import {ResultTable} from "./ResultTable";
+import {
+  Redirect
+} from 'react-router-dom'
 
 export class InputTable extends Component {
   weekDays = ["Sunday", "Monday"];
@@ -13,7 +16,8 @@ export class InputTable extends Component {
       selectedRecipes: {},
       choiceRecipes: [],
       hidden: false,
-      renderInputTable: false
+      renderInputTable: false,
+      redirect: false
     };
     this.fooBar();
   }
@@ -51,12 +55,10 @@ export class InputTable extends Component {
   handleSubmit(event) {
     event.preventDefault();
     this.setState({
-      hidden: true
+      hidden: true,
+      redirect: true
     });
-    console.log(this.state.choiceRecipes)
-    //return <ResultTable recipeList={this.state.choiceRecipes}/>
-    this.handleSubmitFooBar(this.state.choiceRecipes)
-    return <ResultTable recipeList={this.state.fetchedJson}/>
+    this.renderRedirect();
   }
 
   logOutHandler(event) {
@@ -64,6 +66,11 @@ export class InputTable extends Component {
     Cookies.set("loggedIn", false);
     window.location.reload();
   }
+
+  renderRedirect = () => {
+    console.log("Foobar");
+    return <Redirect to="/login" />
+  };
 
   render() {
     return ( this.state.renderInputTable &&
