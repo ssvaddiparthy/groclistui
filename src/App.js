@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./App.css";
 import { InputTable } from "./InputTable";
 import {LoginPage} from "./LoginPage";
 import PrivateRoute from "./PrivateRoute";
@@ -27,10 +26,12 @@ export class App extends Component {
     return (
         <Router>
           <div>
-            <ul>
-              <li><Link to="/login">Login Page</Link></li>
-              <li><Link to="/input">Table Page</Link></li>
-            </ul>
+            <Route path="/" exact>
+              <ul>
+                <li><Link to="/login">Login Page</Link></li>
+                <li><Link to="/input">Table Page</Link></li>
+              </ul>
+            </Route>
             <Route path="/login" component={LoginPage}/>
             <PrivateRoute path="/input" component={InputTable}/>
           </div>
