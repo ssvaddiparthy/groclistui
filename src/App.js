@@ -1,41 +1,35 @@
 import React, { Component } from "react";
 import { InputTable } from "./InputTable";
 import {LoginPage} from "./LoginPage";
-import PrivateRoute from "./PrivateRoute";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'
+import Cookies from 'js-cookie';
 
 export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      recipeList: [],
-      selectedRecipes: [],
-      fetchedJson: {},
-      fooBar: false,
-      showTable: true,
-      renderInputTable: false,
-      selectionReceived: false
+      isLoggedIn: false
     };
   }
 
+  checkCookieBasedLogin(){
+    let session_cookie = Cookies.get("groclist_session_token");
+    console.log(session_cookie);
+    if (session_cookie === null || session_cookie === undefined || session_cookie === "") {
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true
+      });
+    }
+  }
+
   render() {
-    return (
-        <Router>
-          <div>
-            <Route path="/" exact>
-              <ul>
-                <li><Link to="/login">Login Page</Link></li>
-                <li><Link to="/input">Table Page</Link></li>
-              </ul>
-            </Route>
-            <Route path="/login" component={LoginPage}/>
-            <PrivateRoute path="/input" component={InputTable}/>
-          </div>
-        </Router>
-    )
+    if (this.state.isLoggedIn) {
+      return <InputTable></InputTable>
+    } else{
+      return <LoginPage></LoginPage>
+    }
   }
 }

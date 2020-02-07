@@ -6,7 +6,7 @@ export class LoginPage extends Component{
 
     handleSubmit(event){
         event.preventDefault();
-        Cookies.set("loggedIn", true);
+        Cookies.set("groclist_session_token", true);
         return <InputTable />
     }
 
