@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import Cookies from 'js-cookie';
-import { InputTable } from "./InputTable";
 
 export class LoginPage extends Component{
 
     handleSubmit(event){
         event.preventDefault();
         Cookies.set("groclist_session_token", true);
-        return <InputTable />
     }
 
     render() {

@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import Cookies from "js-cookie";
+import Routes from "./Routes";
+import { Route } from "react-router-dom";
+ 
 
 export class ResultTable extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props.selectedRecipes);
     this.state = {
       fetchedJson: {},
       isLoaded: false

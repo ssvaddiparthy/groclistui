@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 export class InputTable extends Component {
   weekDays = ["Sunday", "Monday"];
@@ -9,7 +10,7 @@ export class InputTable extends Component {
     super(props);
     this.state = {
       recipeList: [],
-      selectedRecipes: []
+      selectedRecipes: {}
     };
     this.getRecipes();
   }
@@ -26,7 +27,7 @@ export class InputTable extends Component {
 
   handleChange(event) {
     event.preventDefault();
-    this.state.selectedRecipes.push(event.target.value);
+    this.state.selectedRecipes[event.target.name] = event.target.value;
   }
 
   handleSubmit(event) {
@@ -34,7 +35,7 @@ export class InputTable extends Component {
     this.setState({
       hidden: true
     });
-    this.props.selectionCallback(this.state.selectedRecipes);
+    return <Redirect selectedRecipes={this.state.selectedRecipes} to="/result"/>
   }
 
   render() {
@@ -49,38 +50,45 @@ export class InputTable extends Component {
           <table border="1">
             <thead>
               <tr>
-                <th>Day</th>
+                <th name="day-header">Day</th>
                 {this.meals.map(function(meal, mealIndex) {
-                  return <th key={mealIndex}>{meal}</th>;
+                  return <th name={meal} key={mealIndex}>{meal}</th>;
                 })}
               </tr>
             </thead>
             <tbody>
-              {this.weekDays.map(
-                function(day, dayIndex) {
-                  return (
-                    <tr key={dayIndex}>
-                      <td>{day}</td>
+              {
+                this.weekDays.map(
+                  function(weekDay, weekDayIndex){
+                    return (
+                      <tr name={weekDay} key={weekDayIndex}>
+                      <td key="weekday">{weekDay}</td>
                       {
-                        <td>
-                          <select
-                            key={dayIndex}
-                            onChange={this.handleChange.bind(this)}
-                          >
-                            <option key="blankOption">Choose Item to Cook</option>
-                            {JSON.parse(this.state.recipeList).map(function(
-                              recipe,
-                              recipeIndex
-                            ) {
-                              return <option key={recipeIndex}>{recipe}</option>;
-                            })}
-                          </select>
-                        </td>
+                        this.meals.map(function(meal, mealIndex){
+                          return(
+                            <td name={weekDay+"-"+meal} key={weekDay+"-"+meal}> 
+                            <select
+                              name={weekDay+"-"+meal}
+                              key={weekDay+"-"+meal}
+                              onChange={this.handleChange.bind(this)}
+                              >
+                              <option key="blankOption">Choose Item to Cook</option>
+                              {JSON.parse(this.state.recipeList).map(function(
+                                recipe,
+                                recipeIndex
+                              ) {
+                                return <option key={recipeIndex}>{recipe}</option>;
+                              })}
+                            </select>
+                          </td>
+                          );
+                        }.bind(this))
                       }
-                    </tr>
-                  );
-                }.bind(this)
-              )}
+                    </tr> 
+                    ); 
+                  }.bind(this)
+                )
+              }
             </tbody>
           </table>
           <input
