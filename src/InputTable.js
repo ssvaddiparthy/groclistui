@@ -10,7 +10,8 @@ export class InputTable extends Component {
     super(props);
     this.state = {
       recipeList: [],
-      selectedRecipes: {}
+      selectedRecipes: {},
+      isSubmitted: false
     };
     this.getRecipes();
   }
@@ -35,15 +36,18 @@ export class InputTable extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+    console.log(this.state.selectedRecipes);
     this.setState({
-      hidden: true
-    });
-    return (
-      <Redirect selectedRecipes={this.state.selectedRecipes} to="/result" />
-    );
+      isSubmitted: true
+    })
   }
 
   render() {
+    
+    if (this.state.isSubmitted) {
+      return <Redirect to="/result"></Redirect>;
+    }
+    
     if (this.state.recipeList.length === 0) {
       return <h1> Still Loading all recipes...</h1>;
     } else {
