@@ -1,17 +1,21 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 import Cookies from "js-cookie";
-
-export const login = () => {
-  Cookies.set("loggedIn", true);
-};
-
-export const logout = () => {
-  Cookies.set("loggedIn", false);
-};
+import { LoginPage } from "./LoginPage";
 
 export const isLogin = () => {
-  return Cookies.get("loggedIn");
+  let session_cookie = Cookies.get("groclist_session_token");
+  if (
+    session_cookie === null ||
+    session_cookie === undefined ||
+    session_cookie === "" ||
+    session_cookie === false ||
+    session_cookie === "false"
+  ) {
+    return false;
+  } else {
+    return true;
+  }
 };
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -19,7 +23,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        isLogin() ? <Component {...props} /> : <Redirect to="/login" />
+        isLogin() ? <Component {...props} /> : <LoginPage/>
       }
     />
   );
