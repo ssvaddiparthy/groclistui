@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import Cookies from 'js-cookie';
-import {LoginPage} from './LoginPage';
-import {InputTable} from './InputTable';
-import { Router, Route, Redirect } from 'react-router';
+import Cookies from "js-cookie";
+import { LoginPage } from "./LoginPage";
+import { InputTable } from "./InputTable";
 
 export class App extends Component {
   constructor(props) {
@@ -12,9 +11,13 @@ export class App extends Component {
     };
   }
 
-  checkCookieBasedLogin(){
+  checkCookieBasedLogin() {
     let session_cookie = Cookies.get("groclist_session_token");
-    if (session_cookie === null || session_cookie === undefined || session_cookie === "") {
+    if (
+      session_cookie === null ||
+      session_cookie === undefined ||
+      session_cookie === ""
+    ) {
       this.setState({
         isLoggedIn: false
       });
@@ -25,16 +28,15 @@ export class App extends Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.checkCookieBasedLogin();
   }
 
   render() {
-
     if (this.state.isLoggedIn) {
-      return <InputTable/>
-    } else{
-      return <LoginPage/>
+      return <InputTable />;
+    } else {
+      return <LoginPage />;
     }
   }
 }
