@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export class InputTable extends Component {
   weekDays = ["Sunday", "Monday"];
@@ -14,6 +15,29 @@ export class InputTable extends Component {
       isSubmitted: false
     };
     this.getRecipes();
+  }
+
+  checkCookieBasedLogin() {
+    let session_cookie = Cookies.get("groclist_session_token");
+    if (
+      session_cookie === null ||
+      session_cookie === undefined ||
+      session_cookie === "" ||
+      session_cookie == false ||
+      session_cookie === "false"
+    ) {
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.checkCookieBasedLogin();
   }
 
   getRecipes() {
@@ -42,8 +66,20 @@ export class InputTable extends Component {
     })
   }
 
+  handleLogout(event) {
+    event.preventDefault();
+    Cookies.remove("groclist_session_token");
+    this.setState({
+      isLoggedIn: false
+    })
+  }
+
   render() {
     
+    if (this.state.isLoggedIn == false) {
+      return <Redirect to="/login"></Redirect>
+    }
+
     if (this.state.isSubmitted) {
       return <Redirect to={{
         pathname: "/result",
@@ -114,6 +150,11 @@ export class InputTable extends Component {
             type="submit"
             value="Submit"
             onClick={this.handleSubmit.bind(this)}
+          />
+          <input
+            type="button"
+            value="Logout"
+            onClick={this.handleLogout.bind(this)}
           />
         </form>
       );

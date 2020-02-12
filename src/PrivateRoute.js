@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 import Cookies from "js-cookie";
 import { LoginPage } from "./LoginPage";
 
-export const isLogin = () => {
+export const isLoggedIn = () => {
   let session_cookie = Cookies.get("groclist_session_token");
   if (
     session_cookie === null ||
@@ -23,7 +23,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        isLogin() ? <Component {...props} /> : <LoginPage/>
+        isLoggedIn() ? <Component {...props} /> : <LoginPage/>
       }
     />
   );

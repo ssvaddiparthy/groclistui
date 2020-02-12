@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { Redirect } from "react-router-dom";
 
 export class ResultTable extends Component {
   constructor(props) {
@@ -8,6 +10,29 @@ export class ResultTable extends Component {
       selectedRecipes: this.props.location.state.selectedRecipes,
       fetchedJson: {}
     };
+  }
+
+  checkCookieBasedLogin() {
+    let session_cookie = Cookies.get("groclist_session_token");
+    if (
+      session_cookie === null ||
+      session_cookie === undefined ||
+      session_cookie === "" ||
+      session_cookie == false ||
+      session_cookie === "false"
+    ) {
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.checkCookieBasedLogin();
   }
 
   getIngredients(){
@@ -26,6 +51,11 @@ export class ResultTable extends Component {
   }
 
   render() {
+
+    if (this.state.isLoggedIn == false) {
+      return <Redirect to="/login"></Redirect>
+    }
+
     if (typeof(this.state.fetchedJson.length) === 'undefined') {
       return <h1>Still fetching ingredients from recipes...</h1>
     } else{
