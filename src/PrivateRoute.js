@@ -23,7 +23,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        isLoggedIn() ? <Component {...props} /> : <LoginPage/>
+        isLoggedIn() ? <Component {...props} /> : <LoginPage />
       }
     />
   );

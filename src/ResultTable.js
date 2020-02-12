@@ -31,40 +31,63 @@ export class ResultTable extends Component {
     }
   }
 
+  handleLogout(event) {
+    event.preventDefault();
+    Cookies.remove("groclist_session_token");
+    this.setState({
+      isLoggedIn: false
+    });
+  }
+
   componentDidMount() {
     this.checkCookieBasedLogin();
   }
 
-  getIngredients(){
-    console.log(this.state.selectedRecipes)
-    let url = "http://localhost:8080/ingredients/?recipes=" + Object.values(this.state.selectedRecipes).join(',');
+  getIngredients() {
+    console.log(this.state.selectedRecipes);
+    let url =
+      "http://localhost:8080/ingredients/?recipes=" +
+      Object.values(this.state.selectedRecipes).join(",");
     console.log(url);
     axios.get(url).then(res => {
       this.setState({
-      fetchedJson: JSON.parse(res.data.responseData)
-     });
+        fetchedJson: JSON.parse(res.data.responseData)
+      });
     });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.getIngredients();
   }
 
   render() {
-
     if (this.state.isLoggedIn == false) {
-      return <Redirect to="/login"></Redirect>
+      return <Redirect to="/login"></Redirect>;
     }
 
-    if (typeof(this.state.fetchedJson.length) === 'undefined') {
-      return <h1>Still fetching ingredients from recipes...</h1>
-    } else{
+    if (typeof this.state.fetchedJson.length === "undefined") {
+      return (
+        <div>
+          <h1>Still fetching ingredients from recipes...</h1>
+          <form>
+            <input
+              type="button"
+              value="Logout"
+              onClick={this.handleLogout.bind(this)}
+            ></input>
+          </form>
+        </div>
+      );
+    } else {
       return (
         <div>
           <h1 align="center">Ingredients</h1>
           <table border="1" align="center">
             <tbody>
-              {this.state.fetchedJson.map(function(ingredient, ingredientIndex) {
+              {this.state.fetchedJson.map(function(
+                ingredient,
+                ingredientIndex
+              ) {
                 return (
                   <tr key={ingredientIndex}>
                     <td>{ingredient.name}</td>
@@ -75,6 +98,13 @@ export class ResultTable extends Component {
               })}
             </tbody>
           </table>
+          <form>
+            <input
+              type="button"
+              value="Logout"
+              onClick={this.handleLogout.bind(this)}
+            ></input>
+          </form>
         </div>
       );
     }

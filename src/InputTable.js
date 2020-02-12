@@ -63,7 +63,7 @@ export class InputTable extends Component {
     console.log(this.state.selectedRecipes);
     this.setState({
       isSubmitted: true
-    })
+    });
   }
 
   handleLogout(event) {
@@ -71,21 +71,23 @@ export class InputTable extends Component {
     Cookies.remove("groclist_session_token");
     this.setState({
       isLoggedIn: false
-    })
+    });
   }
 
   render() {
-    
     if (this.state.isLoggedIn == false) {
-      return <Redirect to="/login"></Redirect>
+      return <Redirect to="/login"></Redirect>;
     }
 
     if (this.state.isSubmitted) {
-      return <Redirect to={{
-        pathname: "/result",
-        state: { selectedRecipes: this.state.selectedRecipes }
-    }}
-      ></Redirect>;
+      return (
+        <Redirect
+          to={{
+            pathname: "/result",
+            state: { selectedRecipes: this.state.selectedRecipes }
+          }}
+        ></Redirect>
+      );
     }
 
     if (this.state.recipeList.length === 0) {
