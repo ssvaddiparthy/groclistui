@@ -4,7 +4,6 @@ import { LoginPage } from "./LoginPage";
 import { ResultTable } from "./ResultTable";
 import { InputTable } from "./InputTable";
 import {
-  Redirect,
   BrowserRouter as Router,
   Switch,
   Route

@@ -45,9 +45,13 @@ export class InputTable extends Component {
   render() {
     
     if (this.state.isSubmitted) {
-      return <Redirect to="/result"></Redirect>;
+      return <Redirect to={{
+        pathname: "/result",
+        state: { selectedRecipes: this.state.selectedRecipes }
+    }}
+      ></Redirect>;
     }
-    
+
     if (this.state.recipeList.length === 0) {
       return <h1> Still Loading all recipes...</h1>;
     } else {
