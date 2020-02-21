@@ -11,6 +11,7 @@ export class App extends Component {
       <div>
         <Router>
           <Switch>
+            <Route path="/" component={LoginPage} />
             <Route path="/login" component={LoginPage} />
             <PrivateRoute path="/input" component={InputTable} />
             <PrivateRoute path="/result" component={ResultTable} />
