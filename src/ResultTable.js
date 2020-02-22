@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Redirect } from "react-router-dom";
+ 
 
 export class ResultTable extends Component {
   constructor(props) {
@@ -61,52 +61,31 @@ export class ResultTable extends Component {
   }
 
   render() {
-    if (this.state.isLoggedIn == false) {
-      return <Redirect to="/login"></Redirect>;
-    }
-
-    if (typeof this.state.fetchedJson.length === "undefined") {
-      return (
-        <div>
-          <h1>Still fetching ingredients from recipes...</h1>
-          <form>
-            <input
-              type="button"
-              value="Logout"
-              onClick={this.handleLogout.bind(this)}
-            ></input>
-          </form>
-        </div>
-      );
-    } else {
-      return (
+    return this.state.isLoaded ? (
         <div>
           <h1 align="center">Ingredients</h1>
           <table border="1" align="center">
             <tbody>
-              {this.state.fetchedJson.map(function(
-                ingredient,
-                ingredientIndex
-              ) {
-                return (
+            {JSON.parse(this.props.recipeList).map(function(ingredient, ingredientIndex) {
+              return (
                   <tr key={ingredientIndex}>
                     <td>{ingredient.name}</td>
                     <td>{ingredient.amount}</td>
                     <td>{ingredient.unit}</td>
                   </tr>
-                );
-              })}
+              );
+            })}
             </tbody>
           </table>
-          <form>
-            <input
-              type="button"
-              value="Logout"
-              onClick={this.handleLogout.bind(this)}
-            ></input>
-          </form>
+          <input
+              type="submit"
+              value="LogOut"
+              onClick={this.logOutHandler.bind(this)}
+          />
         </div>
-      );
-    }
+    ) : (
+        <div>Loading...</div>
+
+    );
   }
 }

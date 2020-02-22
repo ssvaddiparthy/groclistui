@@ -1,24 +1,40 @@
 import React, { Component } from "react";
-import PrivateRoute from "./PrivateRoute";
-import { LoginPage } from "./LoginPage";
-import { ResultTable } from "./ResultTable";
-import { InputTable } from "./InputTable";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import Cookies from 'js-cookie';
+import {LoginPage} from './LoginPage';
+import {InputTable} from './InputTable';
+import { Router, Route, Redirect } from 'react-router';
 
 export class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoggedIn: false
+    };
+  }
+
+  checkCookieBasedLogin(){
+    let session_cookie = Cookies.get("groclist_session_token");
+    if (session_cookie === null || session_cookie === undefined || session_cookie === "") {
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true
+      });
+    }
+  }
+
+  componentDidMount(){
+    this.checkCookieBasedLogin();
+  }
+
   render() {
-    return (
-      <div>
-        <Router>
-          <Switch>
-            <Route path="/" component={LoginPage} />
-            <Route path="/login" component={LoginPage} />
-            <PrivateRoute path="/input" component={InputTable} />
-            <PrivateRoute path="/result" component={ResultTable} />
-          </Switch>
-          <Redirect to="/input"></Redirect>
-        </Router>
-      </div>
-    );
+
+    if (this.state.isLoggedIn) {
+      return <InputTable/>
+    } else{
+      return <LoginPage/>
+    }
   }
 }

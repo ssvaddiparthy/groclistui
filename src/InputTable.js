@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import Cookies from "js-cookie";
+
 
 export class InputTable extends Component {
   weekDays = ["Sunday", "Monday"];
@@ -17,40 +18,14 @@ export class InputTable extends Component {
     this.getRecipes();
   }
 
-  checkCookieBasedLogin() {
-    let session_cookie = Cookies.get("groclist_session_token");
-    if (
-      session_cookie === null ||
-      session_cookie === undefined ||
-      session_cookie === "" ||
-      session_cookie == false ||
-      session_cookie === "false"
-    ) {
+  getRecipes(){
+    axios.get(`http://localhost:8080/recipe/all`).then(res => {
       this.setState({
-        isLoggedIn: false
+        recipeList: res.data.responseData,
       });
-    } else {
-      this.setState({
-        isLoggedIn: true
-      });
-    }
-  }
-
-  componentDidMount() {
-    this.checkCookieBasedLogin();
-  }
-
-  getRecipes() {
-    axios
-      .get(`http://localhost:8080/recipe/all`)
-      .then(res => {
-        this.setState({
-          recipeList: res.data.responseData
-        });
-      })
-      .catch(function(error) {
-        console.log(JSON.stringify(error));
-      });
+    }).catch(function (error) {
+      console.log(JSON.stringify(error))
+    });
   }
 
   handleChange(event) {
@@ -72,26 +47,15 @@ export class InputTable extends Component {
     this.setState({
       isLoggedIn: false
     });
+    return <Redirect selectedRecipes={this.state.selectedRecipes} to="/result"/>
   }
 
   render() {
-    if (this.state.isLoggedIn == false) {
-      return <Redirect to="/login"></Redirect>;
-    }
-
-    if (this.state.isSubmitted) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/result",
-            state: { selectedRecipes: this.state.selectedRecipes }
-          }}
-        ></Redirect>
-      );
-    }
-
+    
     if (this.state.recipeList.length === 0) {
-      return <h1> Still Loading all recipes...</h1>;
+      return(
+        <h1> Still Loading all recipes...</h1>
+      )
     } else {
       return (
         <form style={{ visibility: this.state.hidden ? "hidden" : "visible" }}>
@@ -100,52 +64,43 @@ export class InputTable extends Component {
               <tr>
                 <th name="day-header">Day</th>
                 {this.meals.map(function(meal, mealIndex) {
-                  return (
-                    <th name={meal} key={mealIndex}>
-                      {meal}
-                    </th>
-                  );
+                  return <th name={meal} key={mealIndex}>{meal}</th>;
                 })}
               </tr>
             </thead>
             <tbody>
-              {this.weekDays.map(
-                function(weekDay, weekDayIndex) {
-                  return (
-                    <tr name={weekDay} key={weekDayIndex}>
+              {
+                this.weekDays.map(
+                  function(weekDay, weekDayIndex){
+                    return (
+                      <tr name={weekDay} key={weekDayIndex}>
                       <td key="weekday">{weekDay}</td>
-                      {this.meals.map(
-                        function(meal, mealIndex) {
-                          return (
-                            <td
-                              name={weekDay + "-" + meal}
-                              key={weekDay + "-" + meal}
-                            >
-                              <select
-                                name={weekDay + "-" + meal}
-                                key={weekDay + "-" + meal}
-                                onChange={this.handleChange.bind(this)}
+                      {
+                        this.meals.map(function(meal, mealIndex){
+                          return(
+                            <td name={weekDay+"-"+meal} key={weekDay+"-"+meal}> 
+                            <select
+                              name={weekDay+"-"+meal}
+                              key={weekDay+"-"+meal}
+                              onChange={this.handleChange.bind(this)}
                               >
-                                <option key="blankOption">
-                                  Choose Item to Cook
-                                </option>
-                                {JSON.parse(this.state.recipeList).map(function(
-                                  recipe,
-                                  recipeIndex
-                                ) {
-                                  return (
-                                    <option key={recipeIndex}>{recipe}</option>
-                                  );
-                                })}
-                              </select>
-                            </td>
+                              <option key="blankOption">Choose Item to Cook</option>
+                              {JSON.parse(this.state.recipeList).map(function(
+                                recipe,
+                                recipeIndex
+                              ) {
+                                return <option key={recipeIndex}>{recipe}</option>;
+                              })}
+                            </select>
+                          </td>
                           );
-                        }.bind(this)
-                      )}
-                    </tr>
-                  );
-                }.bind(this)
-              )}
+                        }.bind(this))
+                      }
+                    </tr> 
+                    ); 
+                  }.bind(this)
+                )
+              }
             </tbody>
           </table>
           <input
@@ -159,7 +114,7 @@ export class InputTable extends Component {
             onClick={this.handleLogout.bind(this)}
           />
         </form>
-      );
+      ); 
     }
   }
 }
