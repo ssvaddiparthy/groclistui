@@ -7,7 +7,7 @@ export class ResultTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRecipes: this.props.selectedRecipes,
+      selectedRecipes: this.props.location.state.selectedRecipes,
       isLoaded: false,
       fetchedJson: {}
     };
@@ -19,7 +19,7 @@ export class ResultTable extends Component {
       session_cookie === null ||
       session_cookie === undefined ||
       session_cookie === "" ||
-      session_cookie == false ||
+      session_cookie === false ||
       session_cookie === "false"
     ) {
       this.setState({

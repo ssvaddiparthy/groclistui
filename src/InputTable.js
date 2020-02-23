@@ -13,11 +13,35 @@ export class InputTable extends Component {
     super(props);
     this.state = {
       recipeList: [],
+      isLoggedIn: true,
       selectedRecipes: {},
       isSubmitted: false
     };
+  }
+
+  componentDidMount(){
+    this.checkCookieBasedLogin();
     this.getRecipes();
   }
+
+checkCookieBasedLogin() {
+    let session_cookie = Cookies.get("groclist_session_token");
+    if (
+      session_cookie === null ||
+      session_cookie === undefined ||
+      session_cookie === "" ||
+      session_cookie === false ||
+      session_cookie === "false"
+    ) {
+      this.setState({
+        isLoggedIn: false
+      });
+    } else {
+      this.setState({
+        isLoggedIn: true
+      });
+    }
+}
 
   getRecipes(){
     axios.get(`http://localhost:8080/recipe/all`).then(res => {
@@ -47,13 +71,23 @@ export class InputTable extends Component {
     this.setState({
       isLoggedIn: false
     });
-    return <Redirect selectedRecipes={this.state.selectedRecipes} to="/result"/>
   }
 
   render() {
-    
+
+    if (!this.state.isLoggedIn) {
+      return <Redirect to="/login"></Redirect>
+    }
+
     if (this.state.isSubmitted) {
-      return <ResultTable selectedRecipes={this.state.selectedRecipes}></ResultTable>
+      return (
+        <Redirect
+          to={{
+            pathname: "/result",
+            state: { selectedRecipes: this.state.selectedRecipes }
+          }}
+        ></Redirect>
+      );
     }
 
     if (this.state.recipeList.length === 0) {
@@ -62,7 +96,7 @@ export class InputTable extends Component {
       )
     } else {
       return (
-        <form style={{ visibility: this.state.hidden ? "hidden" : "visible" }}>
+        <form>
           <table border="1">
             <thead>
               <tr>
