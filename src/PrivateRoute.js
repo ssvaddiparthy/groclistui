@@ -1,32 +1,28 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import Cookies from "js-cookie";
-import { LoginPage } from "./LoginPage";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-export const isLoggedIn = () => {
-  let session_cookie = Cookies.get("groclist_session_token");
-  if (
-    session_cookie === null ||
-    session_cookie === undefined ||
-    session_cookie === "" ||
-    session_cookie === false ||
-    session_cookie === "false"
-  ) {
-    return false;
-  } else {
-    return true;
-  }
+export const login = () => {
+    Cookies.set("loggedIn", true);
 };
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isLoggedIn() ? <Component {...props} /> : <LoginPage />
-      }
-    />
-  );
+export const logout = () => {
+    Cookies.set("loggedIn", false);
+};
+
+export const isLogin = () => {
+    return Cookies.get("loggedIn")
+};
+
+const PrivateRoute = ({component: Component, ...rest}) => {
+    return (
+
+        <Route {...rest} render={props => (
+            isLogin() ?
+                <Component {...props} />
+                : <Redirect to="/login" />
+        )} />
+    );
 };
 
 export default PrivateRoute;
