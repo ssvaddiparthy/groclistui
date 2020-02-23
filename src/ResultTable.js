@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Redirect } from "react-router-dom";
  
 
 export class ResultTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoggedIn: true,
       selectedRecipes: this.props.location.state.selectedRecipes,
       isLoaded: false,
       fetchedJson: {}
@@ -58,9 +60,20 @@ export class ResultTable extends Component {
   componentDidMount() {
     this.getIngredients();
   }
+  
+  handleLogout(event) {
+    event.preventDefault();
+    Cookies.remove("groclist_session_token");
+    this.setState({
+      isLoggedIn: false
+    });
+  }
 
   render() {
-    return this.state.isLoaded ? (
+    if (!this.state.isLoggedIn) {
+      return <Redirect to="/login"></Redirect>
+    } else {
+      return this.state.isLoaded ? (
         <div>
           <h1 align="center">Ingredients</h1>
           <table border="1" align="center">
@@ -76,10 +89,18 @@ export class ResultTable extends Component {
             })}
             </tbody>
           </table>
+          <form>
+          <input
+            type="button"
+            value="Logout"
+            onClick={this.handleLogout.bind(this)}
+          />
+          </form>
         </div>
     ) : (
         <div>Loading...</div>
 
     );
+    }
   }
 }
