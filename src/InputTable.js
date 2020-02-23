@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 import Cookies from "js-cookie";
+import { ResultTable } from "./ResultTable";
 
 
 export class InputTable extends Component {
@@ -35,7 +36,6 @@ export class InputTable extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(this.state.selectedRecipes);
     this.setState({
       isSubmitted: true
     });
@@ -52,6 +52,10 @@ export class InputTable extends Component {
 
   render() {
     
+    if (this.state.isSubmitted) {
+      return <ResultTable selectedRecipes={this.state.selectedRecipes}></ResultTable>
+    }
+
     if (this.state.recipeList.length === 0) {
       return(
         <h1> Still Loading all recipes...</h1>

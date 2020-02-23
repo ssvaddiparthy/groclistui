@@ -7,7 +7,8 @@ export class ResultTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRecipes: this.props.location.state.selectedRecipes,
+      selectedRecipes: this.props.selectedRecipes,
+      isLoaded: false,
       fetchedJson: {}
     };
   }
@@ -39,10 +40,6 @@ export class ResultTable extends Component {
     });
   }
 
-  componentDidMount() {
-    this.checkCookieBasedLogin();
-  }
-
   getIngredients() {
     console.log(this.state.selectedRecipes);
     let url =
@@ -51,9 +48,11 @@ export class ResultTable extends Component {
     console.log(url);
     axios.get(url).then(res => {
       this.setState({
-        fetchedJson: JSON.parse(res.data.responseData)
+        isLoaded: true,
+        fetchedJson: res.data.responseData
       });
     });
+
   }
 
   componentDidMount() {
@@ -66,7 +65,7 @@ export class ResultTable extends Component {
           <h1 align="center">Ingredients</h1>
           <table border="1" align="center">
             <tbody>
-            {JSON.parse(this.props.recipeList).map(function(ingredient, ingredientIndex) {
+            {JSON.parse(this.state.fetchedJson).map(function(ingredient, ingredientIndex) {
               return (
                   <tr key={ingredientIndex}>
                     <td>{ingredient.name}</td>
@@ -77,11 +76,6 @@ export class ResultTable extends Component {
             })}
             </tbody>
           </table>
-          <input
-              type="submit"
-              value="LogOut"
-              onClick={this.logOutHandler.bind(this)}
-          />
         </div>
     ) : (
         <div>Loading...</div>
