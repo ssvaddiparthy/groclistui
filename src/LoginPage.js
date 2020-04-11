@@ -6,7 +6,8 @@ export class LoginPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-          isLoggedIn: false
+          isLoggedIn: false,
+          redirectToRegister: false
         };
     }
     
@@ -39,15 +40,28 @@ export class LoginPage extends Component{
         this.checkCookieBasedLogin()
     }
 
+    handleRedirectRegister(event){
+      this.setState({
+        "redirectToRegister": true
+      });
+    }
+
     render() {
         if (this.state.isLoggedIn) {
             return <Redirect to="/input"></Redirect>
+        } else if(this.state.redirectToRegister){
+            return <Redirect to="/register"></Redirect>
         } else {
             return (
                 <form>
                     <label>UserName: </label><input type="text" placeholder="Enter Username" name="uname" required/>
+                    <br />
                     <label>Password: </label><input type="password" name="pwd" required/>
+                    <br />
                     <input type="submit" onClick={this.handleSubmit.bind(this)}/>
+                    <br />
+                    <button onClick={this.handleRedirectRegister.bind(this)}>Register</button>
+                    <br />
                 </form>
             );
         }

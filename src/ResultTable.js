@@ -61,14 +61,6 @@ export class ResultTable extends Component {
     this.getIngredients();
   }
   
-  handleLogout(event) {
-    event.preventDefault();
-    Cookies.remove("groclist_session_token");
-    this.setState({
-      isLoggedIn: false
-    });
-  }
-
   render() {
     if (!this.state.isLoggedIn) {
       return <Redirect to="/login"></Redirect>
