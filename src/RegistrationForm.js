@@ -41,7 +41,7 @@ export class RegistrationForm extends Component{
           isSubmitted: true
         });
         let currentComponent = this;
-        axios.post('http://localhost:8080/user', {
+        axios.post('http://localhost:8080/register', {
           uname: event.target.uname.value,
           lname: event.target.lname.value,
           fname: event.target.fname.value,

@@ -11,7 +11,8 @@ export class ResultTable extends Component {
       isLoggedIn: true,
       selectedRecipes: this.props.location.state.selectedRecipes,
       isLoaded: false,
-      fetchedJson: {}
+      fetchedJson: {},
+      groclist_session_token: ""
     };
   }
 
@@ -29,6 +30,7 @@ export class ResultTable extends Component {
       });
     } else {
       this.setState({
+        groclist_session_token: session_cookie,
         isLoggedIn: true
       });
     }
@@ -43,18 +45,16 @@ export class ResultTable extends Component {
   }
 
   getIngredients() {
-    console.log(this.state.selectedRecipes);
-    let url =
-      "http://localhost:8080/ingredients/?recipes=" +
-      Object.values(this.state.selectedRecipes).join(",");
+    let url ="http://localhost:8080/ingredients/?recipes=" + Object.values(this.state.selectedRecipes).join(",");
+    let session_cookie = Cookies.get("groclist_session_token");
     console.log(url);
-    axios.get(url).then(res => {
+    const authstr = 'Bearer '.concat(session_cookie); 
+    axios.get(url, { headers: { Authorization: authstr }}).then(res => {
       this.setState({
         isLoaded: true,
         fetchedJson: res.data.responseData
       });
     });
-
   }
 
   componentDidMount() {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Cookies from 'js-cookie';
+import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 export class LoginPage extends Component{
@@ -7,7 +8,8 @@ export class LoginPage extends Component{
         super(props);
         this.state = {
           isLoggedIn: false,
-          redirectToRegister: false
+          redirectToRegister: false,
+          groclist_session_token: ""
         };
     }
     
@@ -36,8 +38,23 @@ export class LoginPage extends Component{
 
     handleSubmit(event){
         event.preventDefault();
-        Cookies.set("groclist_session_token", true);
-        this.checkCookieBasedLogin()
+        axios({
+          method: 'post',
+          url: `http://localhost:8080/authenticate`,
+          headers: { 'Content-Type': 'application/json' },
+          data: {
+            uname: event.target.uname.value,
+            password: event.target.pwd.value
+          }
+        }).then(res => {
+          Cookies.set('groclist_session_token', res.data.jwt)
+          this.setState({
+            groclist_session_token: res.jwt,
+            isLoggedIn: true
+          });
+        }).catch(function (error) {
+          console.log(JSON.stringify(error))
+        });
     }
 
     handleRedirectRegister(event){
@@ -53,12 +70,12 @@ export class LoginPage extends Component{
             return <Redirect to="/register"></Redirect>
         } else {
             return (
-                <form>
+                <form onSubmit={this.handleSubmit.bind(this)}>
                     <label>UserName: </label><input type="text" placeholder="Enter Username" name="uname" required/>
                     <br />
                     <label>Password: </label><input type="password" name="pwd" required/>
                     <br />
-                    <input type="submit" onClick={this.handleSubmit.bind(this)}/>
+                    <input type="submit" />
                     <br />
                     <button onClick={this.handleRedirectRegister.bind(this)}>Register</button>
                     <br />

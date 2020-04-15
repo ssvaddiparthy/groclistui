@@ -14,7 +14,8 @@ export class InputTable extends Component {
       recipeList: [],
       isLoggedIn: true,
       selectedRecipes: {},
-      isSubmitted: false
+      isSubmitted: false,
+      groclist_session_token: ""
     };
   }
 
@@ -37,13 +38,16 @@ checkCookieBasedLogin() {
       });
     } else {
       this.setState({
+        groclist_session_token: session_cookie,
         isLoggedIn: true
       });
     }
 }
 
   getRecipes(){
-    axios.get(`http://localhost:8080/recipe/all`).then(res => {
+    let session_cookie = Cookies.get("groclist_session_token");
+    const authstr = 'Bearer '.concat(session_cookie); 
+    axios.get(`http://localhost:8080/recipe/all`, { headers: { Authorization: authstr }}).then(res => {
       this.setState({
         recipeList: res.data.responseData,
       });
